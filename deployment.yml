@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sprint1
+  labels:
+    app: sprint1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sprint1-pod
+  template:
+    metadata:
+      labels:
+        app: sprint1-pod
+    spec:
+      containers:
+      - name: sprint1
+        image: sahivasu/sprint1app:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: http
+            containerPort: 8235
+        resources:
+          limits:
+            cpu: 0.2
+            memory: "200Mi"
+
+---
+apiVersion: v1                  
+kind: Service                  
+metadata:                     
+  name: client                  
+  labels:                     
+    app: client             
+spec:                         
+  type: LoadBalancer                             
+  selector:
+    app: sprint1-pod                   
+  ports:                            
+  - name: http
+    port: 8235
+    targetPort: 8235

@@ -1,0 +1,28 @@
+version: '3'
+services:
+  sprint1-vaccination-postgres:
+    image: "postgres:9.6-alpine"
+    container_name: sprint1-vaccination-postgres
+    volumes:
+      - vaccinationapp-db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=Sprint1
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1999
+
+  vaccinationapp:
+    image: sprint1app
+    container_name: sprintvaccinationapp
+    environment:
+      - DB_SERVER=sprint1-vaccination-postgres
+      - POSTGRES_DB=Sprint1
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1999
+    ports:
+      - 8235:8235
+    links:
+      - sprint1-vaccination-postgres
+volumes:
+  vaccinationapp-db:

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment                    # Type of the kubernetes resource
+metadata:
+  name: sprint1-vaccination-postgres           # Name of the deployment
+  labels:                           # Labels applied to this deployment 
+    app: postgres-app
+spec:
+  selector:
+    matchLabels:                    # This deployment applies to the Pods matching the specified labels
+      app: postgres-app
+      tier: postgres
+  strategy:
+    type: Recreate
+  template:                         # Template for the Pods in this deployment
+    metadata:
+      labels:                       # Labels to be applied to the Pods in this deployment
+        app: postgres-app
+        tier: postgres
+    spec:                           # The spec for the containers that will be run inside the Pods in this deployment
+      containers:
+      - image: postgres:9.6-alpine           # The container image
+        name: postgres
+        env:
+        - name: POSTGRES_DB
+          value: "Sprint1"
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          value: "1999"
+        ports:
+        - containerPort: 5432 
+        resources:
+          limits:
+            cpu: 0.2
+            memory: "200Mi"
+
+---
+apiVersion: v1                    # API version
+kind: Service                     # Type of kubernetes resource 
+metadata:
+  name: sprint1-vaccination-postgres        # Name of the resource
+  labels:                         # Labels that will be applied to the resource
+    app: postgres-app
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:                       # Selects any Pod with labels `app=polling-app,tier=mysql`
+    app: postgres-app
+    tier: postgres
